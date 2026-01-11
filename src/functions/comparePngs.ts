@@ -1,6 +1,6 @@
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
-import { XOR } from "ts-xor";
+import { type XOR } from "ts-xor";
 
 type ComparePngsResult = XOR<
   {
@@ -12,11 +12,29 @@ type ComparePngsResult = XOR<
   }
 >;
 
-export function comparePngs(
-  png1: PNG,
-  png2: PNG,
-  threshold: number,
-): ComparePngsResult {
+type ComparePngsParams = {
+  png1: PNG;
+  png2: PNG;
+  threshold: number;
+  antiAliasing: boolean;
+  alpha: number;
+  antiLiasingColor: [number, number, number];
+  diffColor: [number, number, number];
+  diffColorAlt: [number, number, number];
+  diffMask: boolean;
+};
+
+export function comparePngs({
+  png1,
+  png2,
+  threshold,
+  antiAliasing,
+  alpha,
+  antiLiasingColor,
+  diffColor,
+  diffColorAlt,
+  diffMask,
+}: ComparePngsParams): ComparePngsResult {
   const { width, height } = png1;
 
   const diffPng = new PNG({ width, height });
@@ -29,6 +47,12 @@ export function comparePngs(
     height,
     {
       threshold,
+      includeAA: antiAliasing,
+      alpha,
+      aaColor: antiLiasingColor,
+      diffColor,
+      diffColorAlt,
+      diffMask,
     },
   );
 

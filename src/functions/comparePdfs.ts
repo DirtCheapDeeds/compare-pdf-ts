@@ -2,14 +2,31 @@ import {
   getDocument,
   type PDFDocumentProxy,
 } from "pdfjs-dist/legacy/build/pdf.mjs";
+import { type PNG } from "pngjs";
+import type { XOR } from "ts-xor";
 import { convertPdfToPngs } from "./convertPdfToPngs";
-import { PNG } from "pngjs";
 import { comparePngs } from "./comparePngs";
-import { XOR } from "ts-xor";
+
+export const COMPARE_PDFS_OPTIONS_DEFAULT: ComparePdfsOptions = {
+  pngScale: 1.0,
+  considerAntiAliasing: false,
+  includeDiffMask: false,
+  diffThreshold: 0.1,
+  diffAlpha: 0.1,
+  diffAntiAliasingColor: [255, 255, 0],
+  diffColor: [255, 0, 0],
+  diffColorAlt: [255, 0, 0],
+};
 
 export type ComparePdfsOptions = {
-  scale?: number;
-  threshold?: number;
+  pngScale: number;
+  considerAntiAliasing: boolean;
+  includeDiffMask: boolean;
+  diffThreshold: number;
+  diffAlpha: number;
+  diffAntiAliasingColor: [number, number, number];
+  diffColor: [number, number, number];
+  diffColorAlt: [number, number, number];
 };
 
 export type ComparePdfsResult = XOR<
@@ -19,7 +36,7 @@ export type ComparePdfsResult = XOR<
   {
     equal: false;
     diffs: PageDiff[];
-    mismatchedPageCount: boolean;
+    diffPageCount: boolean;
   }
 >;
 
@@ -29,56 +46,86 @@ export type PageDiff = {
 };
 
 export async function comparePdfs(
-  file1: Uint8Array,
-  file2: Uint8Array,
-  options?: ComparePdfsOptions,
+  file1: Uint8Array | Buffer,
+  file2: Uint8Array | Buffer,
+  options?: Partial<ComparePdfsOptions>,
 ): Promise<ComparePdfsResult> {
-  const { scale = 1.0, threshold = 0.1 } = options ?? {};
+  const {
+    pngScale,
+    considerAntiAliasing,
+    includeDiffMask,
+    diffThreshold,
+    diffAlpha,
+    diffAntiAliasingColor,
+    diffColor,
+    diffColorAlt,
+  }: ComparePdfsOptions = {
+    ...COMPARE_PDFS_OPTIONS_DEFAULT,
+    ...options,
+  };
+
+  // getDocument requires data to be Uint8Array
+  const file1Converted: Uint8Array = Buffer.isBuffer(file1)
+    ? Uint8Array.from(file1)
+    : file1;
+  const file2Converted: Uint8Array = Buffer.isBuffer(file2)
+    ? Uint8Array.from(file2)
+    : file2;
 
   const pdf1: PDFDocumentProxy = await getDocument({
-    data: file1,
+    data: file1Converted,
   }).promise;
   const pdf2: PDFDocumentProxy = await getDocument({
-    data: file2,
+    data: file2Converted,
   }).promise;
 
-  const pngs1: PNG[] = await convertPdfToPngs(pdf1, scale);
-  const pngs2: PNG[] = await convertPdfToPngs(pdf2, scale);
+  const pngs1: PNG[] = await convertPdfToPngs({
+    pdf: pdf1,
+    scale: pngScale,
+  });
+  const pngs2: PNG[] = await convertPdfToPngs({
+    pdf: pdf2,
+    scale: pngScale,
+  });
 
-  const unfilteredDiffs = await Promise.all(
-    pngs1.map(async (png1, index) => {
-      const pageNumber = index + 1;
+  const diffs: PageDiff[] = pngs1.flatMap((png1, index) => {
+    const pageNumber = index + 1;
 
-      const png2 = pngs2[index];
+    const png2 = pngs2[index];
 
-      if (!png2) {
-        return undefined;
-      }
+    if (!png2) {
+      return [];
+    }
 
-      const { equal, diffPng } = comparePngs(png1, png2, threshold);
+    const { equal, diffPng } = comparePngs({
+      png1,
+      png2,
+      threshold: diffThreshold,
+      antiAliasing: considerAntiAliasing,
+      alpha: diffAlpha,
+      antiLiasingColor: diffAntiAliasingColor,
+      diffColor,
+      diffColorAlt,
+      diffMask: includeDiffMask,
+    });
 
-      if (equal) {
-        return undefined;
-      }
+    if (equal) {
+      return [];
+    }
 
-      return {
-        pageNumber,
-        diffPng,
-      };
-    }),
-  );
+    return {
+      pageNumber,
+      diffPng,
+    };
+  });
 
-  const diffs: PageDiff[] = unfilteredDiffs.filter(
-    (diff) => diff !== undefined,
-  );
+  const diffPageCount = pngs1.length !== pngs2.length;
 
-  const mismatchedPageCount = pngs1.length !== pngs2.length;
-
-  if (diffs.length > 0 || mismatchedPageCount) {
+  if (diffs.length > 0 || diffPageCount) {
     return {
       equal: false,
       diffs,
-      mismatchedPageCount,
+      diffPageCount,
     };
   }
 

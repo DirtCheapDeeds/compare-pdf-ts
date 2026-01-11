@@ -42,6 +42,6 @@ export default defineConfig({
     "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     "import/order": "error",
     "functional/type-declaration-immutability": "off",
-    "functional/prefer-immutable-type": "off",
+    "functional/prefer-immutable-types": "off",
   },
 });

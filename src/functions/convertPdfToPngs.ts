@@ -1,6 +1,6 @@
 import {
-  Canvas,
-  CanvasRenderingContext2D,
+  type Canvas,
+  type CanvasRenderingContext2D,
   createCanvas,
 } from "@napi-rs/canvas";
 import {
@@ -10,10 +10,15 @@ import {
 } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { PNG } from "pngjs";
 
-export async function convertPdfToPngs(
-  pdf: PDFDocumentProxy,
-  scale: number,
-): Promise<PNG[]> {
+type ConvertPdfToPngsParams = {
+  pdf: PDFDocumentProxy;
+  scale: number;
+};
+
+export async function convertPdfToPngs({
+  pdf,
+  scale,
+}: ConvertPdfToPngsParams): Promise<PNG[]> {
   const { numPages } = pdf;
   const pageNumbers = Array.from({ length: numPages }, (_, i) => i + 1);
 
