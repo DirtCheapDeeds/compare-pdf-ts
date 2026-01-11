@@ -15,7 +15,7 @@ describe("comparePdfs", () => {
     expect(diffPageCount).toBeUndefined();
   });
 
-  it("should correclty identify the diffs in two difference pdfs", async () => {
+  it("should correclty identify the diffs in two different pdfs", async () => {
     const file1: Buffer = readFileSync("./src/tests/data/baseline1.pdf");
     const file2: Buffer = readFileSync(
       "./src/tests/data/baseline1-with-diffs.pdf",
@@ -32,8 +32,8 @@ describe("comparePdfs", () => {
 
     const [diff1, diff2] = diffs ?? [];
 
-    const diff1PngBuffer = diff1 ? PNG.sync.write(diff1.diffPng) : null;
-    const diff2PngBuffer = diff2 ? PNG.sync.write(diff2.diffPng) : null;
+    const diff1PngBuffer = diff1 ? PNG.sync.write(diff1.diffPng) : undefined;
+    const diff2PngBuffer = diff2 ? PNG.sync.write(diff2.diffPng) : undefined;
 
     expect(equal).toBe(false);
     expect(diff1PngBuffer?.equals(expectedPage1Diff)).toBe(true);
