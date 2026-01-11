@@ -6,6 +6,8 @@ const options: BuildOptions = {
   platform: "node",
   format: "esm",
   bundle: true,
+  external: ["@napi-rs/canvas"],
+  loader: { ".node": "file" },
   minify: true,
   treeShaking: true,
   sourcemap: true,

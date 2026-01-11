@@ -3,6 +3,7 @@
     "module": "esnext",
     "target": "esnext",
     "lib": ["esnext"],
+    "skipLibCheck": true,
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
     "declaration": true,

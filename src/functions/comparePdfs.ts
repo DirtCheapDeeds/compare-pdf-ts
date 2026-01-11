@@ -7,7 +7,7 @@ import type { XOR } from "ts-xor";
 import { convertPdfToPngs } from "./convertPdfToPngs";
 import { comparePngs } from "./comparePngs";
 
-export const COMPARE_PDFS_OPTIONS_DEFAULT: ComparePdfsOptions = {
+export const DEFAULT_COMPARE_PDFS_OPTIONS: ComparePdfsOptions = {
   pngScale: 1.0,
   considerAntiAliasing: false,
   includeDiffMask: false,
@@ -60,7 +60,7 @@ export async function comparePdfs(
     diffColor,
     diffColorAlt,
   }: ComparePdfsOptions = {
-    ...COMPARE_PDFS_OPTIONS_DEFAULT,
+    ...DEFAULT_COMPARE_PDFS_OPTIONS,
     ...options,
   };
 
