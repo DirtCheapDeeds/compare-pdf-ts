@@ -76,10 +76,3 @@ const DEFAULT_COMPARE_PDFS_OPTIONS: ComparePdfsOptions = {
   diffColorAlt: [255, 0, 0],
 };
 ```
-
-## Example
-
-<img src="./src/tests//data/baseline1.pdf" height="200">
-<img src="./src/tests//data/baseline1-page-1-diff.png" height="200">
-<img src="./src/tests//data/baseline1-page-2-diff.png" height="200">
-<img src="./src/tests//data/baseline1.pdf" height="200">
