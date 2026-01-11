@@ -29,8 +29,8 @@ export type PageDiff = {
 };
 
 export async function comparePdfs(
-  file1: Buffer,
-  file2: Buffer,
+  file1: Uint8Array,
+  file2: Uint8Array,
   options?: ComparePdfsOptions,
 ): Promise<ComparePdfsResult> {
   const { scale = 1.0, threshold = 0.1 } = options ?? {};

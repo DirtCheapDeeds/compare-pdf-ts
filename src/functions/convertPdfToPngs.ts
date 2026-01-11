@@ -1,4 +1,8 @@
-import { Canvas, CanvasRenderingContext2D, createCanvas } from "canvas";
+import {
+  Canvas,
+  CanvasRenderingContext2D,
+  createCanvas,
+} from "@napi-rs/canvas";
 import {
   type PageViewport,
   type PDFPageProxy,
