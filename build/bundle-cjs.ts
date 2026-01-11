@@ -6,7 +6,7 @@ const options: BuildOptions = {
   platform: "node",
   format: "cjs",
   bundle: true,
-  external: ["@napi-rs/canvas"],
+  external: ["@napi-rs/canvas", "pdfjs-dist"],
   loader: { ".node": "file" },
   minify: true,
   treeShaking: true,

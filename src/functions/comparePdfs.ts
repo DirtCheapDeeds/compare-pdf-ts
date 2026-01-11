@@ -2,7 +2,7 @@ import {
   getDocument,
   type PDFDocumentProxy,
 } from "pdfjs-dist/legacy/build/pdf.mjs";
-import { type PNG } from "pngjs";
+import { PNG } from "pngjs";
 import type { XOR } from "ts-xor";
 import { convertPdfToPngs } from "./convertPdfToPngs";
 import { comparePngs } from "./comparePngs";
@@ -42,12 +42,12 @@ export type ComparePdfsResult = XOR<
 
 export type PageDiff = {
   pageNumber: number;
-  diffPng: PNG;
+  diffPng: Buffer;
 };
 
 export async function comparePdfs(
-  file1: Uint8Array | Buffer,
-  file2: Uint8Array | Buffer,
+  file1: Buffer,
+  file2: Buffer,
   options?: Partial<ComparePdfsOptions>,
 ): Promise<ComparePdfsResult> {
   const {
@@ -65,12 +65,8 @@ export async function comparePdfs(
   };
 
   // getDocument requires data to be Uint8Array
-  const file1Converted: Uint8Array = Buffer.isBuffer(file1)
-    ? Uint8Array.from(file1)
-    : file1;
-  const file2Converted: Uint8Array = Buffer.isBuffer(file2)
-    ? Uint8Array.from(file2)
-    : file2;
+  const file1Converted = Uint8Array.from(file1);
+  const file2Converted = Uint8Array.from(file2);
 
   const pdf1: PDFDocumentProxy = await getDocument({
     data: file1Converted,
@@ -115,7 +111,7 @@ export async function comparePdfs(
 
     return {
       pageNumber,
-      diffPng,
+      diffPng: PNG.sync.write(diffPng),
     };
   });
 

@@ -1,18 +1,26 @@
 {
   "name": "compare-pdf-ts",
   "version": "0.0.1",
-  "author": "",
-  "repository": "",
-  "description": "",
+  "author": "DirtCheapDeeds",
+  "repository": "https://github.com/DirtCheapDeeds/compare-pdf-ts",
+  "description": "In-memory PDF comparison tool designed for Node.js and TypeScript environments.",
+  "license": "MIT",
+  "keywords": [
+    "pdf",
+    "compare pdf"
+  ],
   "files": [
     "package.json",
     "dist"
   ],
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.mjs",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/cjs/index.cjs"
     }
   },
   "scripts": {

@@ -1,6 +1,5 @@
 import { readFileSync } from "fs";
 import { describe, it, expect } from "vitest";
-import { PNG } from "pngjs";
 import { comparePdfs } from "../functions";
 
 describe("comparePdfs", () => {
@@ -32,12 +31,9 @@ describe("comparePdfs", () => {
 
     const [diff1, diff2] = diffs ?? [];
 
-    const diff1PngBuffer = diff1 ? PNG.sync.write(diff1.diffPng) : undefined;
-    const diff2PngBuffer = diff2 ? PNG.sync.write(diff2.diffPng) : undefined;
-
     expect(equal).toBe(false);
-    expect(diff1PngBuffer?.equals(expectedPage1Diff)).toBe(true);
-    expect(diff2PngBuffer?.equals(expectedPage2Diff)).toBe(true);
+    expect(diff1?.diffPng.equals(expectedPage1Diff)).toBe(true);
+    expect(diff2?.diffPng.equals(expectedPage2Diff)).toBe(true);
     expect(diffs?.length).toBe(2);
     expect(diffPageCount).toBe(false);
   });
