@@ -4,10 +4,9 @@ import { comparePdfs } from "../functions";
 
 describe("comparePdfs", () => {
   it("should consider two identical pdfs as equal", async () => {
-    const file1 = readFileSync("./src/tests/data/baseline1.pdf");
-    const file2 = readFileSync("./src/tests/data/baseline1.pdf");
+    const file = readFileSync("./src/tests/data/baseline1.pdf");
 
-    const { equal, diffs, diffPageCount } = await comparePdfs(file1, file2);
+    const { equal, diffs, diffPageCount } = await comparePdfs(file, file);
 
     expect(equal).toBe(true);
     expect(diffs).toBeUndefined();

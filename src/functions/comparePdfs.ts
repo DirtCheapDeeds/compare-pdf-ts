@@ -19,13 +19,40 @@ export const DEFAULT_COMPARE_PDFS_OPTIONS: ComparePdfsOptions = {
 };
 
 export type ComparePdfsOptions = {
+  /**
+   * The scale factor to use when rendering PDF pages to PNG images. Higher values result in higher fidelity
+   * images but increase processing time and memory usage. Default is 1.0.
+   */
   pngScale: number;
+  /**
+   * Whether to consider anti-aliasing when comparing images. Default is false.
+   */
   considerAntiAliasing: boolean;
+  /**
+   * Whether to include a diff mask in the output diff images. Default is false.
+   */
   includeDiffMask: boolean;
+  /**
+   * The threshold for pixel color differences to be considered significant. Ranges from 0 to 1, where 0 means
+   * any difference is significant and 1 means only completely different colors are significant. Default is 0.1.
+   */
   diffThreshold: number;
+  /**
+   * The alpha transparency value to use for the diff overlay. Ranges from 0 (fully transparent) to 1 (fully opaque).
+   * Default is 0.1.
+   */
   diffAlpha: number;
+  /**
+   * The RGB color to use for highlighting anti-aliased pixels in the diff image. Default is yellow [255, 255, 0].
+   */
   diffAntiAliasingColor: [number, number, number];
+  /**
+   * The RGB color to use for highlighting differences in the diff image. Default is red [255, 0, 0].
+   */
   diffColor: [number, number, number];
+  /**
+   * The RGB color to use as an alternative for highlighting differences in the diff image. Default is red [255, 0, 0].
+   */
   diffColorAlt: [number, number, number];
 };
 
@@ -35,16 +62,36 @@ export type ComparePdfsResult = XOR<
   },
   {
     equal: false;
+    /**
+     * An array of diff objects containing the diff image and the page number of the diff.
+     */
     diffs: PageDiff[];
+    /**
+     * Indicates whether the two PDFs have a different number of pages.
+     */
     diffPageCount: boolean;
   }
 >;
 
 export type PageDiff = {
+  /**
+   * The page number (1-based index) where the difference was found.
+   */
   pageNumber: number;
+  /**
+   * A Buffer containing the PNG image data highlighting the differences for the page.
+   */
   diffPng: Buffer;
 };
 
+/**
+ * Compares two PDF files provided as Buffers using image pixel comparison and returns whether they
+ * are equal along with any diffs.
+ * @param file1 - Buffer containing the first PDF file.
+ * @param file2 - Buffer containing the second PDF file.
+ * @param options - Optional comparison settings.
+ * @returns A promise that resolves to a `ComparePdfsResult` indicating if the PDFs are equal and any diffs.
+ */
 export async function comparePdfs(
   file1: Buffer,
   file2: Buffer,
