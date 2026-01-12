@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "DirtCheapDeeds",
   "repository": "https://github.com/DirtCheapDeeds/compare-pdf-ts",
-  "description": "In-memory PDF comparison tool designed for Node.js and TypeScript environments.",
+  "description": "In-memory PDF comparison tool designed for Node.js environments.",
   "license": "MIT",
   "keywords": [
     "pdf",
