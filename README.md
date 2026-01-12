@@ -42,8 +42,8 @@ You can optionally pass some options when calling the `comparePdfs` function to 
 
 ```ts
 const { equal, diffs } = await comparePdfs(pdf1, pdf2, {
-  pngScale: 1.5
-  diffThreshold: 0.2
+  pngScale: 1.5,
+  diffThreshold: 0.2,
 });
 ```
 
